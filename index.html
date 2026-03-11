@@ -179,7 +179,7 @@
     // This URL tells Google Drive to serve the file as a download.
     // Because it's an .apk (not html/image), the browser treats it
     // as a file download and saves it — no page navigation happens.
-    window.location.href = `https://drive.google.com/uc?export=download&id=${FILE_ID}&confirm=t`;
+    window.location.href = `https://drive.usercontent.google.com/download?id=${FILE_ID}&export=download&confirm=t`;
 
     // Complete UI after a moment
     setTimeout(() => {
