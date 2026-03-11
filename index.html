@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Arihant Cubic House</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #2D5BFF; --blue-dark: #1A3FCC; --blue-light: #EEF2FF;
+      --text: #1C1C2E; --muted: #6B7280; --bg: #F8F9FF;
+      --card: #FFFFFF; --border: #E4E8F5; --green: #16a34a;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+    .bg-shapes { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    .bg-shapes span { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(45,91,255,0.07), transparent 70%); }
+    .bg-shapes span:nth-child(1) { width: 600px; height: 600px; top: -150px; right: -150px; }
+    .bg-shapes span:nth-child(2) { width: 400px; height: 400px; bottom: 50px; left: -100px; }
+    .bg-shapes span:nth-child(3) { width: 250px; height: 250px; top: 40%; left: 50%; transform: translate(-50%,-50%); }
+
+    .page { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 80px 24px 60px; display: flex; flex-direction: column; align-items: center; }
+
+    .app-icon { width: 100px; height: 100px; background: var(--blue-light); border-radius: 28px; display: flex; align-items: center; justify-content: center; margin-bottom: 28px; box-shadow: 0 8px 32px rgba(45,91,255,0.15); animation: floatIcon 4s ease-in-out infinite; }
+    .app-icon svg { width: 50px; height: 50px; }
+    @keyframes floatIcon { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+    .version-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--blue-light); color: var(--blue); font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; padding: 5px 14px; border-radius: 99px; margin-bottom: 20px; letter-spacing: 0.04em; animation: fadeUp 0.5s ease both; }
+    .version-badge span { width: 7px; height: 7px; background: var(--blue); border-radius: 50%; display: inline-block; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+    h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800; letter-spacing: -0.02em; text-align: center; color: var(--text); margin-bottom: 14px; line-height: 1.1; }
+    .tagline { font-size: 1.05rem; color: var(--muted); text-align: center; font-weight: 400; margin-bottom: 52px; max-width: 420px; line-height: 1.6; }
+
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; margin-bottom: 52px; }
+    @media (max-width: 600px) { .features { grid-template-columns: 1fr; } }
+
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 22px 18px; display: flex; flex-direction: column; gap: 10px; transition: transform 0.25s ease, box-shadow 0.25s ease; animation: fadeUp 0.6s ease both; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(45,91,255,0.1); }
+    .card:nth-child(1){animation-delay:0.1s} .card:nth-child(2){animation-delay:0.2s} .card:nth-child(3){animation-delay:0.3s}
+    .card-icon { width: 42px; height: 42px; background: var(--blue-light); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    .card-icon svg { width: 22px; height: 22px; color: var(--blue); }
+    .card h3 { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; }
+    .card p { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    .actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-bottom: 28px; animation: fadeUp 0.6s 0.4s ease both; }
+
+    .btn { display: inline-flex; align-items: center; gap: 9px; padding: 16px 32px; border-radius: 50px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; cursor: pointer; text-decoration: none; border: none; transition: all 0.2s ease; }
+    .btn-primary { background: var(--blue); color: #fff; box-shadow: 0 8px 24px rgba(45,91,255,0.35); }
+    .btn-primary:hover:not(:disabled) { background: var(--blue-dark); box-shadow: 0 12px 32px rgba(45,91,255,0.45); transform: translateY(-2px); }
+    .btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+    .btn-outline:hover { background: var(--blue-light); transform: translateY(-2px); }
+
+    #progress-wrap { width: 100%; max-width: 340px; display: none; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 16px; }
+    #progress-wrap.show { display: flex; }
+    .progress-bar-bg { width: 100%; height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue), #6B9FFF); border-radius: 99px; width: 0%; transition: width 0.2s linear; }
+    #progress-label { font-size: 0.82rem; color: var(--muted); }
+
+    .footnote { font-size: 0.78rem; color: #aab1c5; text-align: center; letter-spacing: 0.02em; margin-top: 8px; animation: fadeUp 0.6s 0.5s ease both; }
+    .footnote span { margin: 0 6px; }
+
+    #toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1C1C2E; color: #fff; padding: 12px 24px; border-radius: 12px; font-size: 0.88rem; box-shadow: 0 8px 32px rgba(0,0,0,0.2); transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); z-index: 999; white-space: nowrap; }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+<div class="bg-shapes"><span></span><span></span><span></span></div>
+
+<div class="page">
+  <div class="app-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#2D5BFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/>
+    </svg>
+  </div>
+
+  <div class="version-badge"><span></span> Latest Version Available</div>
+  <h1>Arihant Cubic House</h1>
+  <p class="tagline">Experience the perfect blend of innovation and design</p>
+
+  <div class="features">
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <h3>Fast &amp; Responsive</h3>
+      <p>Lightning-quick performance optimized for all devices</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/></svg>
+      </div>
+      <h3>User Friendly</h3>
+      <p>Intuitive interface designed for seamless navigation</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <h3>Secure &amp; Reliable</h3>
+      <p>Your data is protected with industry-standard security</p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="downloadBtn" onclick="startDownload()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Download App
+    </button>
+  </div>
+
+  <div id="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div id="progress-label">Connecting to Google Drive…</div>
+  </div>
+
+  <p class="footnote">Android app <span>•</span> Requires Android 8.0 or higher</p>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  // ══════════════════════════════════════════════════════════════
+  //  HOW TO UPDATE THE APK (takes 30 seconds):
+  //
+  //  1. Upload your new APK to this Google Drive folder:
+  //     https://drive.google.com/drive/folders/138QfzfibCSgurnbz_WHhPo6j9vH5SJQm
+  //
+  //  2. Right-click the APK file → Share → "Anyone with the link"
+  //
+  //  3. Click "Copy link" — it looks like:
+  //     https://drive.google.com/file/d/XXXXXXXXXXXXXXXXXXXXXXXXXXX/view?usp=sharing
+  //                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  //                                      This part is your FILE_ID
+  //
+  //  4. Paste just the FILE_ID below and save.
+  // ══════════════════════════════════════════════════════════════
+  const FILE_ID  = "1OjpRoHEBu8vE_u3M8IYMQ2hJE7Sv7iYL"; // ← paste your file ID here
+  const APK_NAME = "_Cubic_19228438.apk";
+
+  function showToast(msg, duration = 4000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+  }
+
+  function startDownload() {
+    const btn   = document.getElementById('downloadBtn');
+    const wrap  = document.getElementById('progress-wrap');
+    const fill  = document.getElementById('progressFill');
+    const label = document.getElementById('progress-label');
+
+    btn.disabled = true;
+    btn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+        <polyline points="7 10 12 15 17 10"/>
+        <line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>Downloading…`;
+
+    wrap.classList.add('show');
+    fill.style.width = '0%';
+    label.textContent = 'Starting download…';
+
+    // Animate bar to show activity
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct = Math.min(pct + (pct < 40 ? 8 : pct < 75 ? 4 : 1), 92);
+      fill.style.width = pct + '%';
+    }, 200);
+
+    // This URL tells Google Drive to serve the file as a download.
+    // Because it's an .apk (not html/image), the browser treats it
+    // as a file download and saves it — no page navigation happens.
+    window.location.href = `https://drive.google.com/uc?export=download&id=${FILE_ID}&confirm=t`;
+
+    // Complete UI after a moment
+    setTimeout(() => {
+      clearInterval(iv);
+      fill.style.width = '100%';
+      label.textContent = '✓ Download started — check your Downloads folder';
+      btn.disabled = false;
+      btn.style.background = '#16a34a';
+      btn.style.boxShadow  = '0 8px 24px rgba(22,163,74,0.35)';
+      btn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>Downloaded!`;
+      showToast('🎉 APK downloading — check your Downloads folder!');
+    }, 3500);
+  }
+</script>
+</body>
+</html>
